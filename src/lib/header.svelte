@@ -16,12 +16,15 @@
 	export let title = '';
 	let isOpen = false;
 
+	//@ts-ignore
 	function handleUpdate(event) {
 		isOpen = event.detail.isOpen;
 	}
 
 	let fullTitle = title ? `TWIG - ${title}` : `TWIG`;
 </script>
+
+<title>{fullTitle}</title>
 
 <Navbar color="light" light expand="md">
 	<NavbarBrand href="/">{fullTitle}</NavbarBrand>
