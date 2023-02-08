@@ -1,23 +1,48 @@
 <script>
-    export let title = "";
+	import {
+		Collapse,
+		Navbar,
+		NavbarToggler,
+		NavbarBrand,
+		Nav,
+		NavItem,
+		NavLink,
+		Dropdown,
+		DropdownToggle,
+		DropdownMenu,
+		DropdownItem
+	} from 'sveltestrap';
 
-    let fullTitle = title ? `TWIG - ${title}` : `TWIG`
+	export let title = '';
+	let isOpen = false;
+
+	function handleUpdate(event) {
+		isOpen = event.detail.isOpen;
+	}
+
+	let fullTitle = title ? `TWIG - ${title}` : `TWIG`;
 </script>
 
-<section class="header">
-    <div>
-        <h1 id="title">{fullTitle}</h1>
-    </div>
-    <div>
-        <a href="" class="nav">Home</a>
-        <a href="" class="nav">Set LEDs</a>
-    </div>
-</section>
-
-<style>
-    section.header {
-        background-color: aqua;
-        width: 100%;
-        height: 25px;
-    }
-</style>
+<Navbar color="light" light expand="md">
+	<NavbarBrand href="/">{fullTitle}</NavbarBrand>
+	<NavbarToggler on:click={() => (isOpen = !isOpen)} />
+	<Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
+		<Nav class="ms-auto" navbar>
+			<NavItem>
+				<NavLink href="#components/">Components</NavLink>
+			</NavItem>
+			<NavItem>
+				<NavLink href="https://github.com/bestguy/sveltestrap">GitHub</NavLink>
+			</NavItem>
+			<Dropdown nav inNavbar>
+				<DropdownToggle nav caret>Pages</DropdownToggle>
+				<DropdownMenu end>
+					<DropdownItem>Home</DropdownItem>
+					<DropdownItem>Option 2</DropdownItem>
+					<DropdownItem divider />
+					<DropdownItem>Reset</DropdownItem>
+				</DropdownMenu>
+			</Dropdown>
+		</Nav>
+	</Collapse>
+</Navbar>
