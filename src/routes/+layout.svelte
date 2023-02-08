@@ -15,7 +15,7 @@
 
     <Container>
         <Row>
-          <Col style="background-color:bisque;"><slot></slot></Col>
+          <Col><slot></slot></Col>
         </Row>
     </Container>
 </main>
