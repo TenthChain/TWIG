@@ -26,7 +26,7 @@ import PocketBase from "pocketbase";
 
 // Setup pocketbase client for communicating to server with. Plus auth 
 // to prevent random users from submitting requests unless authored by SvelteKit
-const pb = new PocketBase("http://127.0.0.1:8090");
+const pb = new PocketBase(env.pb_url);
 const userData = await pb.collection("users").authWithPassword(env.pb_username, env.pb_username);
 
 // @ts-ignore
