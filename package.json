@@ -26,6 +26,7 @@
 	},
 	"type": "module",
 	"dependencies": {
+		"pocketbase": "^0.10.1",
 		"sveltestrap": "^5.10.0"
 	}
 }
