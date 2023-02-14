@@ -3,7 +3,7 @@
 Example "url" object
 
 URL {
-  href: "http://localhost:5173/led/123,456,789",
+  href: "http://localhost:5173/led/123,456,789", localhost:5173/led/5,100,255,255,255
   origin: "http://localhost:5173",
   protocol: "http:",
   username: "",
