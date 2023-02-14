@@ -43,13 +43,9 @@ export const GET = ( async ({ url }) => {
     let r = -1;
     let g = -1;
     let b = -1;
-
-    const record = await pb.collection("settings").getOne("pds4l4a8k1jjtvm");
     
     const splitUrl = url.pathname.split("/")[2].split(",");
     let responseString = `You got it! from url ${url}\n you want to alter ${splitUrl[0]}`;
-
-    console.log(splitUrl);
 
     switch (splitUrl.length) {
         // Toggle on/off for LED
