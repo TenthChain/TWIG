@@ -32,6 +32,12 @@ const userData = await pb.collection("users").authWithPassword(env.pb_username, 
 // @ts-ignore
 export const GET = ( async ({ url }) => {
 
+    const isServerEnabledRecord = await pb.collection('settings').getFirstListItem('setting_name="server_enabled"');
+
+    if (!isServerEnabledRecord["value"]) {
+        return new Response("Failed. Server not enabled.");
+    }
+
     let led = -1;
     let bri = -1;
     let r = -1;
