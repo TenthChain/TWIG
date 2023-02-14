@@ -44,7 +44,7 @@
                 "completed": true
             };
                     
-            fetch("http://192.168.0.82/json/state", {
+            fetch(env.PUBLIC_tree_url, {
                 method: 'POST',
                 headers: {
                     'Accept': 'application/json',
