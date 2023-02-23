@@ -26,6 +26,7 @@
 	}
 	
 	let serverDetails;
+	let serverEnabled;
 	let fullTitle = title ? `TWIG - ${title}` : `TWIG`;
 </script>
 
@@ -37,14 +38,14 @@
 	<Collapse {isOpen} navbar expand="md" on:update={handleUpdate}>
 		<Nav class="ms-auto" navbar>
 			<NavItem>
-				<NavLink href="#components/">Components</NavLink>
+				<NavLink><div bind:this={serverDetails}><Icon name="hdd-network-fill"/>&nbsp;Status</div></NavLink>
+				<Tooltip target={serverDetails}>Address - {env.PUBLIC_tree_url}</Tooltip>
+			</NavItem>
+			<NavItem>
+				<NavLink href="#components/"></NavLink>
 			</NavItem>
 			<NavItem>
 				<NavLink href="https://github.com/bestguy/sveltestrap">GitHub</NavLink>
-			</NavItem>
-			<NavItem>
-				<NavLink><div bind:this={serverDetails}><Icon name="hdd-network-fill"/>&nbsp;Status</div></NavLink>
-				<Tooltip target={serverDetails}>Address - {env.PUBLIC_tree_url}</Tooltip>
 			</NavItem>
 			<Dropdown nav inNavbar>
 				<DropdownToggle nav caret>Pages</DropdownToggle>
