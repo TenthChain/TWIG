@@ -23,6 +23,7 @@
     onMount(async () => {
 
 		pb.collection('led_requests').subscribe('*', function (e) {
+            console.log("Got request!")
             if (e.record["completed"]) { return; }
 
             const data = { 
@@ -54,6 +55,7 @@
             })
             .then(response => response.json())
             .then(async (response) => {
+                console.log("Finished request!")
                 const record = await pb.collection('led_requests').update(e.record["id"], updated_record_data);
             });
 
