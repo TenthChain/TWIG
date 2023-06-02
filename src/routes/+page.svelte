@@ -12,6 +12,10 @@
 	import StatsCard from '$lib/components/statsCard.svelte';
 
     const pb = new PocketBase("http://127.0.0.1:8090");
+    let FlushInProgress = false;
+    let ProcessorActive = false;
+    let requestCount = 0;
+    let count = 0;
 
     function componentToHex(c) {
         var hex = c.toString(16);
@@ -22,51 +26,81 @@
         return "" + componentToHex(r) + componentToHex(g) + componentToHex(b);
     }
 
-    onMount(async () => {
+    async function UpdateRequestCount() {
+        requestCount = (await pb.collection('led_requests').getList(1, 1)).totalPages;
+    }
 
-		pb.collection('led_requests').subscribe('*', function (e) {
-            console.log("Got request!")
-            if (e.record["completed"]) { return; }
+    function startProcessor(){
+        ProcessorActive = true;
+        try {
+            UpdateRequestCount();
+            console.log("subscribing");
+            pb.collection('led_requests').subscribe('*', function (e) {
+                console.log("Got Request! Woo!");
+                try {
+                    console.log("Got request!")
+                    if (e.record["completed"]) { return; }
 
-            const data = { 
-                "seg": {
-                    "i": [
-                        e.record["led_to_update"],
-                        rgbToHex(e.record["r"],e.record["g"],e.record["b"])
-                    ]
+                    const data = { 
+                        "seg": {
+                            "i": [
+                                e.record["led_to_update"],
+                                rgbToHex(e.record["r"],e.record["g"],e.record["b"])
+                            ]
+                        }
+                    }
+
+                    const updated_record_data = {
+                        "led_to_update": e.record["let_to_update"],
+                        "requested_by": e.record["requested_by"],
+                        "r": e.record["r"],
+                        "g": e.record["g"],
+                        "b": e.record["b"],
+                        "brightness": e.record["brightness"],
+                        "completed": true
+                    };
+                            
+                    fetch(env.PUBLIC_tree_url, {
+                        method: 'POST',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Content-Type': 'application/json'
+                        },
+                        body: JSON.stringify(data)
+                    })
+                    .then(response => response.json())
+                    .then(async (response) => {
+                        console.log("Finished request!")
+                        const record = await pb.collection('led_requests').update(e.record["id"], updated_record_data);
+                    });
+                    UpdateRequestCount();
+                } catch (error) {
+                    console.log(error);
+                    ProcessorActive = false;
                 }
-            }
-
-            const updated_record_data = {
-                "led_to_update": e.record["let_to_update"],
-                "requested_by": e.record["requested_by"],
-                "r": e.record["r"],
-                "g": e.record["g"],
-                "b": e.record["b"],
-                "brightness": e.record["brightness"],
-                "completed": true
-            };
-                    
-            fetch(env.PUBLIC_tree_url, {
-                method: 'POST',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(data)
+            }).catch((err) => {
+                console.log(err.originalError);
+                ProcessorActive = false;
             })
-            .then(response => response.json())
-            .then(async (response) => {
-                console.log("Finished request!")
-                const record = await pb.collection('led_requests').update(e.record["id"], updated_record_data);
-            });
+        } catch (error) {
+            console.log("Error with subscription - ", error);
+            ProcessorActive = false;
+        }
+    }
 
-        }).catch((err) => {
-            console.log(err.originalError);
-        })
+    function endProcessor() {
+        pb.collection('led_requests').unsubscribe();
+        ProcessorActive = false;
+    }
+
+    onMount(async () => {
+        startProcessor();
 	});
 
-    onDestroy(() => pb.collection('led_requests').unsubscribe());
+    onDestroy(() => {
+        console.log("Unsubscribing!");
+        endProcessor();
+    });
 
 </script>
 
