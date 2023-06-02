@@ -2,12 +2,14 @@
     // @ts-nocheck
 
 	import { onMount, onDestroy } from 'svelte';
+    
 
     // Import Environment variables from .env file
     import { env } from "$env/dynamic/public";
 
     // Import pocketbase
     import PocketBase from "pocketbase";
+	import StatsCard from '$lib/components/statsCard.svelte';
 
     const pb = new PocketBase("http://127.0.0.1:8090");
 
@@ -67,6 +69,24 @@
     onDestroy(() => pb.collection('led_requests').unsubscribe());
 
 </script>
+
+<div class="row row-cols-1 row-cols-md-3 g-4 pt-3">
+    <div class="col">
+        <StatsCard title="Current Count of led_requests records" value="{requestCount}" />
+    </div>
+    <div class="col">
+        {#if ProcessorActive}
+        <StatsCard title="Processor Active?" icon="bi bi-check-circle-fill text-success"/>
+        {:else}
+        <StatsCard title="Processor Active?" icon="bi bi-exclamation-octagon-fill text-danger"/>
+        {/if}
+    </div>
+    <div class="col">
+        <StatsCard title="Count" value="{count}" />
+    </div>
+</div>
+
+<hr/>
 
 <h1>Welcome to SvelteKit</h1>
 <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
