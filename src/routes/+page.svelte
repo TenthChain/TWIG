@@ -126,6 +126,16 @@
 <p>Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation</p>
 
 
+{#if FlushInProgress}
+<button class="btn btn-danger btn-disabled btn-lg">
+    FLUSH DB! <div class="spinner-border" role="status"></div>
+</button>
+{:else}
+<button class="btn btn-danger btn-lg" on:click={ObliterateDB}>
+    FLUSH DB!
+</button>
+{/if}
+
 <style>
 
 </style>
