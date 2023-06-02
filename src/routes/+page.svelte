@@ -102,6 +102,39 @@
         endProcessor();
     });
 
+    async function ObliterateDB() {
+        endProcessor();
+        FlushInProgress = true;
+        try {
+            console.log("Getting requests...");
+            const records = await pb.collection('led_requests').getFullList();
+            count = 0;
+            console.log("Clearing...");
+            
+            if (records.length > 1000) {
+                console.log("Limiting delete to 1000 to avoid instability!")
+            }
+
+            records.forEach(element => {
+                if (count > 1000) {
+                    return
+                }
+                pb.collection('led_requests').delete(element.id);
+                count++;
+            });
+            console.log("Cleared!");
+        } catch (error) {
+            console.log("Cannot complete deletion of entre LED Requests table - ", error)
+        }
+        
+        console.log("Flush completed... waiting to clear backlog of requests");
+        setTimeout(function() {
+            console.log("Restarted processor!");
+            startProcessor();
+            FlushInProgress = false;
+        }, 1500);
+    }
+
 </script>
 
 <div class="row row-cols-1 row-cols-md-3 g-4 pt-3">
